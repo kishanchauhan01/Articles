@@ -283,7 +283,7 @@ Redis receives the command and routes the serialized packet across every connect
 
 - It checks the target room or namespace specified in the packet.
 
-- It inspects **its own local process memor**y to see if any connected sockets match the criteria (in this case, Bob).
+- It inspects **its own local process memory** to see if any connected sockets match the criteria (in this case, Bob).
 
 - Finding Bob's active socket, Instance 2 writes the data directly down Bob's TCP connection.
 
@@ -337,7 +337,7 @@ services:
     command: ["redis-server", "--appendonly", "no", "--save", ""]
 ```
 
-- **Note on Flags:** `--appendonly no` and `--save` "" <i> disable disk persistence. Because Redis acts strictly as an in-memory Pub/Sub message bus here, turning off disk snapshots reduces CPU overhead and avoids unnecessary disk I/O.</i>
+- **Note on Flags:** `--appendonly no` and `--save` "" disable disk persistence. Because Redis acts strictly as an in-memory Pub/Sub message bus here, turning off disk snapshots reduces CPU overhead and avoids unnecessary disk I/O.
 
 Launch the Redis container in detached mode:
 
@@ -599,15 +599,7 @@ const io = new Server(server, {
 
 Sharded Pub/Sub hashes room names and distributes messages across distinct cluster slots, ensuring that individual Redis cluster nodes only process events intended for their specific shards.
 
-## Conclusion & Source Code
-
-Scaling real-time systems horizontally requires treating individual application servers as stateless connection terminators. By offloading event routing to a shared, high-throughput message bus like Redis, your backend instances can scale up or down dynamically behind any standard load balancer without dropping critical broadcasts.
-
-You can inspect, fork, and run the complete reproducible source code—including the Docker Compose cluster, multi-instance server configurations, and simulated test runner—from the companion repository:
-
-👉 GitHub Repository: [GitHub Repo](https://github.com/kishanchauhan01/Articles/tree/main/Scaling%20Socket.IO%20Horizontally)
-
-## Real-World Applications: How Tech Giants Use This Architecture
+## Part 6: Real-World Applications: How Tech Giants Use This Architecture
 
 While chat applications are the standard hello-world tutorial for WebSockets, production-grade distributed push backbones power the core experiences of the largest platforms on the internet.
 
@@ -632,3 +624,12 @@ Any platform where state must update on a user's screen in sub-second intervals�
 ##### 4. Financial Exchanges & Robinhood / Binance: Ticker Feeds
 
 - **High-Throughput Price Tickers:** In crypto and equity trading, millions of open client sockets subscribe to market pairs (e.g., BTC/USDT or AAPL). The market-matching engine publishes price ticks to high-speed in-memory message brokers. The edge socket clusters catch the updates and fan them out to user dashboards, driving real-time order books and candlestick chart updates without database reads.
+
+## Conclusion & Source Code
+
+Scaling real-time systems horizontally requires treating individual application servers as stateless connection terminators. By offloading event routing to a shared, high-throughput message bus like Redis, your backend instances can scale up or down dynamically behind any standard load balancer without dropping critical broadcasts.
+
+You can inspect, fork, and run the complete reproducible source code—including the Docker Compose cluster, multi-instance server configurations, and simulated test runner—from the companion repository:
+
+👉 GitHub Repository: [GitHub Repo](https://github.com/kishanchauhan01/Articles/tree/main/Scaling%20Socket.IO%20Horizontally)
+
