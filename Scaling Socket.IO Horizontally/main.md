@@ -23,7 +23,7 @@ To scale, you do what every production engineer does: scale horizontally. You sp
 
 The moment you introduce that second server instance, your real-time communication silently breaks.
 
-<img src="image_1.png">
+![Socket.IO Scaling Architecture](https://raw.githubusercontent.com/kishanchauhan01/Articles/main/Scaling%20Socket.IO%20Horizontally/assets/image_1.png)
 
 Node.js processes adhere strictly to a shared-nothing architecture. Process A and Process B inhabit isolated virtual memory spaces. They cannot inspect, access, or manipulate each other's data structures.
 
@@ -245,7 +245,7 @@ io.to("room-1").emit("event", payload);
 
 Socket.IO does not execute the network writes directly. It passes the event, target room, and data to its default adapter: the `socket.io-adapter`.
 
-<img src="image_2.png">
+![Socket.IO Scaling Architecture](https://raw.githubusercontent.com/kishanchauhan01/Articles/main/Scaling%20Socket.IO%20Horizontally/assets/image_2.png)
 
 The default adapter's implementation is straightforward: it maintains local JavaScript `Map` and `Set` instances containing all connected socket IDs and their associated rooms. It loops through those memory structures, finds the matching TCP sockets attached to that specific Node.js process, and writes the bytes out.
 
@@ -255,7 +255,7 @@ If a client isn't in that local `Map`, the default adapter has no way to find or
 
 The official `@socket.io/redis-adapter` replaces the default in-memory adapter. Instead of confining event delivery to local memory, it turns every Node.js instance into both a Publisher and a Subscriber on Redis.
 
-<img src="image_3.png">
+![Socket.IO Scaling Architecture](https://raw.githubusercontent.com/kishanchauhan01/Articles/main/Scaling%20Socket.IO%20Horizontally/assets/image_3.png)
 
 Here is the exact lifecycle of an event when the Redis adapter is active:
 
@@ -495,7 +495,7 @@ By default, Socket.IO does not establish a raw WebSocket connection immediately.
 
 This introduces a race condition when sitting behind a standard round-robin load balancer (like AWS ALB, Nginx, or Cloudflare):
 
-<img src="image_4.png">
+![Socket.IO Scaling Architecture](https://raw.githubusercontent.com/kishanchauhan01/Articles/main/Scaling%20Socket.IO%20Horizontally/assets/image_4.png)
 
 #### The Fix: Enable Sticky Sessions (Session Affinity)
 
